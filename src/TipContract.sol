@@ -11,6 +11,7 @@ contract TipContract is Ownable
 	mapping(address => uint256) public balances;
 
 	event DiscordDeposit(address tokenContract, uint256 amount, uint64 discordId);
+	event DiscordWithdrawal(address tokenContract, uint256 amount, address recipient, uint64 discordId);
 
 	function viewBalanceOf(address tokenContract)  external view returns (uint256)
 	{
@@ -20,13 +21,14 @@ contract TipContract is Ownable
 	function depositToken(uint256 amount, address tokenContract, uint64 discordId) external
 	{
 		require(IERC20(tokenContract).transferFrom(msg.sender, address(this), amount), "Transfer from function failed.");
-		balances[tokenContract].add(amount);
+		balances[tokenContract] = balances[tokenContract].add(amount);
 		emit DiscordDeposit(tokenContract, amount, discordId);
 	}
 
-	function withdrawToken(uint256 amount, uint256 fee, address tokenContract, address recipient) public onlyOwner
+	function withdrawToken(uint256 amount, uint256 fee, address tokenContract, address recipient, uint64 discordId) public onlyOperator
 	{
 		require(IERC20(tokenContract).transfer(recipient, amount), "Transfer function failed.");
-		balances[tokenContract].sub(amount.add(fee));
+		balances[tokenContract] = balances[tokenContract].sub(amount.add(fee));
+		emit DiscordWithdrawal(tokenContract, amount, recipient, discordId);
 	}
 }
