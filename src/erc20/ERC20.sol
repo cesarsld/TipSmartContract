@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 
 import "../SafeMath.sol";
-import "../IERC20.sol";
+import "./IERC20.sol";
 import "./mintable.sol";
 
 
