@@ -23,7 +23,7 @@ contract TipContract is Ownable
 
 	function withdrawToken(uint256 amount, uint256 fee, address tokenContract, address recipient, uint64 discordId) public onlyOperator
 	{
-		require (IERC20(tokenContract).transfer(recipient, amount), "Transfer function failed.");
+		require (IERC20(tokenContract).transfer(recipient, amount.sub(fee)), "Transfer function failed.");
 		balances[tokenContract] = balances[tokenContract].sub(amount.add(fee));
 		fees[tokenContract] = fees[tokenContract].add(fee);
 		emit DiscordWithdrawal(tokenContract, amount, recipient, discordId);
