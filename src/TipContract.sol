@@ -27,8 +27,8 @@ contract TipContract is Ownable {
 	function withdrawEther(uint256 amount, uint256 fee, address payable recipient, uint64 discordId) public onlyOperator {
 		etherBalance = etherBalance.sub(fee);
 		etherBalance = etherBalance.sub(amount);
-		recipient.transfer(amount.sub(fee));
-		emit  DiscordWithdrawal(address(0), amount.sub(fee), recipient, discordId);
+		recipient.transfer(amount);
+		emit  DiscordWithdrawal(address(0), amount, recipient, discordId);
 	}
 
 	function depositToken(uint256 amount, address tokenContract, uint64 discordId) external {
@@ -39,11 +39,11 @@ contract TipContract is Ownable {
 
 	function withdrawToken(uint256 amount, uint256 fee, address tokenContract, address recipient, uint64 discordId) public onlyOperator {
 		fees[tokenContract] = fees[tokenContract].add(fee);
-		IERC20(tokenContract).transfer(recipient, amount.sub(fee)
-		emit DiscordWithdrawal(tokenContract, amount.sub(fee), recipient, discordId);
+		IERC20(tokenContract).transfer(recipient, amount);
+		emit DiscordWithdrawal(tokenContract, amount, recipient, discordId);
 	}
 
-	function withdrawFees(address recipient, address tokenContract) public onlyOwner returns (bool) {
+	function withdrawFees(address tokenContract) public onlyOwner returns (bool) {
 		require (fees[tokenContract] > 0, "TipContract: Balance is empty.");
 		uint256 fee = fees[tokenContract];
 		fees[tokenContract] = 0;
